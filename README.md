@@ -1,2 +1,54 @@
-# sudoku
-Java  utilities to generate and solve Sudoku games
+# Sudoku
+The class Sudoku contains utilities to generate and solve Sudoku games
+
+Note: ordinary values are in 1..9 range, value 0 is used for a free place
+
+# Methods
+The following methods are provided to generate and solve Sudoku games:
+```
+fillBoard(int n_values): fills board with random n_values in 1..81 range;
+
+solve(int level): try to solve the sudoku board;
+
+parseBoard(String str): unpack string to board;
+```
+
+# Usage from command line
+```
+Usage: java Sudoku [<board>]
+
+without parameters: it runs random tests forever
+with parameters:
+<board>: 81 characters string defining a Sudoku board, e.g. 000000012000000003002300400001800005060070800000009000008500000900040500470006000
+```
+# Example
+
+Executing the command java Sudoku 000000012000000003002300400001800005060070800000009000008500000900040500470006000 provides the following output:
+
+```
+000|000|012
+000|000|003
+002|300|400
+---+---+---
+001|800|005
+060|070|800
+000|009|000
+---+---+---
+008|500|000
+900|040|500
+470|006|000
+#values = 21, isFull = false, isCorrect = true
+Solution found:
+839|465|712
+146|782|953
+752|391|486
+---+---+---
+391|824|675
+564|173|829
+287|659|341
+---+---+---
+628|537|194
+913|248|567
+475|916|238
+#values = 81, isFull = true, isCorrect = true
+```
