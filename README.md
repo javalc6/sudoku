@@ -10,6 +10,8 @@ fillBoard(int n_values): fills board with random n_values in 1..81 range;
 
 solve(int level): try to solve the sudoku board;
 
+solveBM(int level): try to solve the sudoku board using bitmap for speed improvement;
+
 parseBoard(String str): unpack string to board;
 ```
 

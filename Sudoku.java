@@ -3,7 +3,8 @@ The class Sudoku contains utilities to generate and solve Sudoku game
 
 Note: ordinary values are in 1..9 range, value 0 is used for a free place
 
-24-10-2023
+24-10-2023: initial release
+02-11-2023: added method solveBM() to solve sudoku using bitmaps for speed improvement
 
 Usage: java Sudoku [<board>]
 
@@ -21,6 +22,8 @@ public class Sudoku {
     private final int[][] board = new int[9][9];
     private final int[][] template = {{1,2,3,4,5,6,7,8,9},{4,9,7,8,1,2,5,6,3},{5,8,6,3,9,7,1,4,2},{3,5,4,7,6,9,8,2,1},
 		{8,6,9,2,4,1,3,5,7},{7,1,2,5,3,8,4,9,6},{9,7,1,6,8,5,2,3,4},{2,3,5,9,7,4,6,1,8},{6,4,8,1,2,3,9,7,5}};
+
+	final static int[] value_mask = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};//mask used by method solveBM(): value_mask[k] = 2 ^ k
 
 //fillBoard: fill board with random n_values in 1..81 range 
     public void fillBoard(int n_values) {
@@ -87,6 +90,52 @@ public class Sudoku {
 						if (!values.contains(k)) {
 							board[i][j] = k;
 							if (solve(level + 1)) {//board solved?
+								return true;
+							} else parseBoard(saved_board);//restore board
+						}
+					}
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+//solveBM: try to solve the sudoku board using bitmap for speed improvement
+	public boolean solveBM(int level) {
+//find plain solution
+		boolean found;
+		do {
+			found = false;
+			for (int i = 0; i < 9; i++)	{
+				for (int j = 0; j < 9; j++)	{
+					if (board[i][j] == 0) {
+						int values = getBMRelatedValues(i, j);
+						if (Integer.bitCount(values) == 8) {//found plain solution for place (i, j)
+							for (int k = 1; k < 10; k++) {
+								if ((values & value_mask[k]) == 0) {
+									board[i][j] = k;
+									found = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		} while (found);
+
+//find recursive solution
+		String saved_board = toString();
+
+		for (int i = 0; i < 9; i++)	{
+			for (int j = 0; j < 9; j++)	{
+				if (board[i][j] == 0) {
+					int values = getBMRelatedValues(i, j);
+					for (int k = 1; k < 10; k++) {
+						if ((values & value_mask[k]) == 0) {
+							board[i][j] = k;
+							if (solveBM(level + 1)) {//board solved?
 								return true;
 							} else parseBoard(saved_board);//restore board
 						}
@@ -222,6 +271,31 @@ public class Sudoku {
 		return values;
 	}
 
+//internal function, it finds values related to place (ii, jj) using bitmap, used by solveBM()
+	private int getBMRelatedValues(int ii, int jj) {
+		int values = 0;
+//check rows
+		for (int i = 0; i < 9; i++)	{
+			if (board[i][jj] > 0)
+				values |= value_mask[board[i][jj]];
+		}
+//check columns
+		for (int j = 0; j < 9; j++)	{
+			if (board[ii][j] > 0)
+				values |= value_mask[board[ii][j]];
+		}
+//check square
+		int p = (ii / 3) * 3;
+		int q = (jj / 3) * 3;
+		for (int i = p; i < p + 3; i++)	{
+			for (int j = q; j < q + 3; j++)	{
+				if (board[i][j] > 0)
+					values |= value_mask[board[i][j]];
+			}
+		}
+		return values;
+	}
+
 //demo	
 	public static void main(String[] args) {
 		if (args.length == 0) {
@@ -241,8 +315,9 @@ public class Sudoku {
 				if (sudo.parseBoard(board) && sudo.isCorrect()) {
 					sudo.print(true);
 					System.out.println("#values = " + sudo.getNumberOfValues() + ", isFull = " + sudo.isFull() + ", isCorrect = " + sudo.isCorrect());
-					if (sudo.solve(0)) {
-						System.out.println("Solution found: ");
+					long t0 = System.nanoTime();
+					if (sudo.solveBM(0)) {
+						System.out.println("Solution found in " + (System.nanoTime() - t0) / 1e6 + " ms:");
 						sudo.print(true);
 						System.out.println("#values = " + sudo.getNumberOfValues() + ", isFull = " + sudo.isFull() + ", isCorrect = " + sudo.isCorrect());
 					} else System.out.println("No solution found");//not all sudoku boards have solution, e.g.: 000000012000000003002300400001800005060070800000009000008500000900040500470006001
