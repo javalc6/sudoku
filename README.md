@@ -17,10 +17,11 @@ parseBoard(String str): unpack string to board;
 
 # Usage from command line
 ```
-Usage: java Sudoku [<board>]
+Usage: java Sudoku [-benchmark | <board>]
 
 without parameters: it runs random tests forever
 with parameters:
+-benchmark: performs benchmark using a specific set of boards
 <board>: 81 characters string defining a Sudoku board, e.g. 000000012000000003002300400001800005060070800000009000008500000900040500470006000
 ```
 # Example
