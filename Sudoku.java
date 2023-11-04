@@ -6,6 +6,7 @@ Note: ordinary values are in 1..9 range, value 0 is used for a free place
 24-10-2023: initial release
 02-11-2023: added method solveBM() to solve sudoku using bitmaps for speed improvement
 03-11-2023: added parameter -benchmark to perform benchmarks
+04-11-2023: added method generate() to generate random sudoku board using solver based algorithm
 
 Usage: java Sudoku [-benchmark | <board>]
 
@@ -26,6 +27,88 @@ public class Sudoku {
 		{8,6,9,2,4,1,3,5,7},{7,1,2,5,3,8,4,9,6},{9,7,1,6,8,5,2,3,4},{2,3,5,9,7,4,6,1,8},{6,4,8,1,2,3,9,7,5}};
 
 	final static int[] value_mask = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};//mask used by method solveBM(): value_mask[k] = 2 ^ k
+
+//generate: random sudoku board generator with random n_values in 1..81 range
+	public void generate(int n_values) {
+		for (int i = 0; i < 9; i++)
+			for (int j = 0; j < 9; j++)
+				board[i][j] = 0;
+		Random random = new Random();
+		if (!generate(random))
+			throw new RuntimeException("invalid board generated");//never occurs
+
+//here we have full board, now we clear cells in random order
+		random = new Random();//new random number generator to decouple clearing from full board generation
+		int counter = n_values;
+		int[] shuffle = new int[81];
+		for (int i = 0; i < 81; i++)
+			shuffle[i] = i;
+		for (int i = 0; i < 81; i++) {
+			int k = random.nextInt(81);//k in 0..80 range
+			int temp = shuffle[k];
+			shuffle[k] = shuffle[i];
+			shuffle[i] = temp;
+		}
+		for (int i = 0; i < 9; i++)	{
+			for (int j = 0; j < 9; j++)	{
+				if (counter > 0 && shuffle[i * 9 + j] < n_values) {
+					counter--;
+				} else board[i][j] = 0;
+			}
+		}
+	}
+
+//internal function, generate full board
+	private boolean generate(Random random) {
+//find plain solution
+		boolean found;
+		do {
+			found = false;
+			for (int i = 0; i < 9; i++)	{
+				for (int j = 0; j < 9; j++)	{
+					if (board[i][j] == 0) {
+						HashSet<Integer> values = getAvailableValues(i, j);
+						if (values.size() == 1) {//found plain solution for place (i, j)
+							Integer[] avalues = values.toArray(new Integer[0]);
+							board[i][j] = avalues[0];
+							found = true;
+							break;
+						}
+					}
+				}
+			}
+		} while (found);
+
+//find recursive solution
+		String saved_board = toString();
+
+		for (int i = 0; i < 9; i++)	{
+			for (int j = 0; j < 9; j++)	{
+				if (board[i][j] == 0) {
+					HashSet<Integer> values = getAvailableValues(i, j);
+					Integer[] avalues = values.toArray(new Integer[0]);
+					int n_avalues = avalues.length;
+
+					for (int l = 0; l < n_avalues; l++) {
+						int k = random.nextInt(n_avalues);//k in 0..n_avalues-1 range
+						int temp = avalues[k];
+						avalues[k] = avalues[l];
+						avalues[l] = temp;
+					}
+
+					for (int k = 0; k < n_avalues; k++) {
+						board[i][j] = avalues[k];
+						if (generate(random)) {//board solved?
+							return true;
+						} else parseBoard(saved_board);//restore board
+					}
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
 
 //fillBoard: fill board with random n_values in 1..81 range 
     public void fillBoard(int n_values) {
@@ -275,6 +358,33 @@ public class Sudoku {
 		return values;
 	}
 
+//internal function, it finds values available for place (ii, jj), used by generate()
+	private HashSet<Integer> getAvailableValues(int ii, int jj) {
+		HashSet<Integer> values = new HashSet<>();
+		for (int k = 1; k < 10; k++) values.add(k);//all values 1..9
+
+//check rows
+		for (int i = 0; i < 9; i++)	{
+			if (board[i][jj] > 0)
+				values.remove(board[i][jj]);
+		}
+//check columns
+		for (int j = 0; j < 9; j++)	{
+			if (board[ii][j] > 0)
+				values.remove(board[ii][j]);
+		}
+//check square
+		int p = (ii / 3) * 3;
+		int q = (jj / 3) * 3;
+		for (int i = p; i < p + 3; i++)	{
+			for (int j = q; j < q + 3; j++)	{
+				if (board[i][j] > 0)
+					values.remove(board[i][j]);
+			}
+		}
+		return values;
+	}
+
 //internal function, it finds values related to place (ii, jj) using bitmap, used by solveBM()
 	private int getBMRelatedValues(int ii, int jj) {
 		int values = 0;
@@ -424,7 +534,8 @@ public class Sudoku {
 //forever test for solver()
 			Sudoku sudo = new Sudoku();
 			while (true) {
-				sudo.fillBoard(30);
+				sudo.generate(30);
+//				sudo.fillBoard(30);
 				sudo.solve(0);
 				if (sudo.isFull() && sudo.isCorrect()) {
 					System.out.print(".");

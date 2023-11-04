@@ -8,6 +8,8 @@ The following methods are provided to generate and solve Sudoku games:
 ```
 fillBoard(int n_values): fills board with random n_values in 1..81 range;
 
+generate(int n_values): random sudoku board generator with random n_values in 1..81 range;
+
 solve(int level): try to solve the sudoku board;
 
 solveBM(int level): try to solve the sudoku board using bitmap for speed improvement;
