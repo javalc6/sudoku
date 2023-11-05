@@ -14,6 +14,8 @@ solve(int level): try to solve the sudoku board;
 
 solveBM(int level): try to solve the sudoku board using bitmap for speed improvement;
 
+fastsolveBM(int level): try to solve the sudoku board using bitmap and forbidden tables for speed improvement
+
 parseBoard(String str): unpack string to board;
 ```
 

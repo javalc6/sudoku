@@ -7,6 +7,7 @@ Note: ordinary values are in 1..9 range, value 0 is used for a free place
 02-11-2023: added method solveBM() to solve sudoku using bitmaps for speed improvement
 03-11-2023: added parameter -benchmark to perform benchmarks
 04-11-2023: added method generate() to generate random sudoku board using solver based algorithm
+05-11-2023: added method fastsolveBM() to solve sudoku using bitmaps and forbidden tables for speed improvement
 
 Usage: java Sudoku [-benchmark | <board>]
 
@@ -88,12 +89,15 @@ public class Sudoku {
 					HashSet<Integer> values = getAvailableValues(i, j);
 					Integer[] avalues = values.toArray(new Integer[0]);
 					int n_avalues = avalues.length;
-
-					for (int l = 0; l < n_avalues; l++) {
-						int k = random.nextInt(n_avalues);//k in 0..n_avalues-1 range
-						int temp = avalues[k];
-						avalues[k] = avalues[l];
-						avalues[l] = temp;
+					if (values.size() == 0)
+						return false;
+					if (values.size() > 1) {
+						for (int l = 0; l < n_avalues; l++) {
+							int k = random.nextInt(n_avalues);//k in 0..n_avalues-1 range
+							int temp = avalues[k];
+							avalues[k] = avalues[l];
+							avalues[l] = temp;
+						}
 					}
 
 					for (int k = 0; k < n_avalues; k++) {
@@ -149,7 +153,7 @@ public class Sudoku {
 			for (int i = 0; i < 9; i++)	{
 				for (int j = 0; j < 9; j++)	{
 					if (board[i][j] == 0) {
-						HashSet<Integer> values = getRelatedValues(i, j);
+						HashSet<Integer> values = getForbiddenValues(i, j);
 						if (values.size() == 8) {//found plain solution for place (i, j)
 							for (int k = 1; k < 10; k++) {
 								if (!values.contains(k)) {
@@ -170,15 +174,16 @@ public class Sudoku {
 		for (int i = 0; i < 9; i++)	{
 			for (int j = 0; j < 9; j++)	{
 				if (board[i][j] == 0) {
-					HashSet<Integer> values = getRelatedValues(i, j);
-					for (int k = 1; k < 10; k++) {
-						if (!values.contains(k)) {
-							board[i][j] = k;
-							if (solve(level + 1)) {//board solved?
-								return true;
-							} else parseBoard(saved_board);//restore board
+					HashSet<Integer> values = getForbiddenValues(i, j);
+					if (values.size() < 9)
+						for (int k = 1; k < 10; k++) {
+							if (!values.contains(k)) {
+								board[i][j] = k;
+								if (solve(level + 1)) {//board solved?
+									return true;
+								} else parseBoard(saved_board);//restore board
+							}
 						}
-					}
 					return false;
 				}
 			}
@@ -186,6 +191,7 @@ public class Sudoku {
 		
 		return true;
 	}
+
 //solveBM: try to solve the sudoku board using bitmap for speed improvement
 	public boolean solveBM(int level) {
 //find plain solution
@@ -195,7 +201,7 @@ public class Sudoku {
 			for (int i = 0; i < 9; i++)	{
 				for (int j = 0; j < 9; j++)	{
 					if (board[i][j] == 0) {
-						int values = getBMRelatedValues(i, j);
+						int values = getForbiddenValuesBM(i, j);
 						if (Integer.bitCount(values) == 8) {//found plain solution for place (i, j)
 							for (int k = 1; k < 10; k++) {
 								if ((values & value_mask[k]) == 0) {
@@ -216,15 +222,123 @@ public class Sudoku {
 		for (int i = 0; i < 9; i++)	{
 			for (int j = 0; j < 9; j++)	{
 				if (board[i][j] == 0) {
-					int values = getBMRelatedValues(i, j);
-					for (int k = 1; k < 10; k++) {
-						if ((values & value_mask[k]) == 0) {
-							board[i][j] = k;
-							if (solveBM(level + 1)) {//board solved?
-								return true;
-							} else parseBoard(saved_board);//restore board
+					int values = getForbiddenValuesBM(i, j);
+					if (Integer.bitCount(values) < 9)
+						for (int k = 1; k < 10; k++) {
+							if ((values & value_mask[k]) == 0) {
+								board[i][j] = k;
+								if (solveBM(level + 1)) {//board solved?
+									return true;
+								} else parseBoard(saved_board);//restore board
+							}
+						}
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+
+//fastsolveBM: try to solve the sudoku board using bitmap and forbidden tables for speed improvement
+	public boolean fastsolveBM(int level) {
+		int[] rows_forbidden = new int[9];//row values forbidden by Sudoku rules
+		for (int i = 0; i < 9; i++)	{
+			int values = 0;
+			for (int j = 0; j < 9; j++)	{
+				if (board[i][j] != 0)
+					values |= value_mask[board[i][j]];
+			}
+			rows_forbidden[i] = values;
+		}
+		int[] column_forbidden = new int[9];//column values forbidden by Sudoku rules
+		for (int j = 0; j < 9; j++)	{
+			int values = 0;
+			for (int i = 0; i < 9; i++)	{
+				if (board[i][j] != 0)
+					values |= value_mask[board[i][j]];
+			}
+			column_forbidden[j] = values;
+		}
+		int[][] square_forbidden = new int[3][3];//square values forbidden by Sudoku rules
+		for (int p = 0; p < 3; p++)	{
+			int ii = p * 3;
+			for (int q = 0; q < 3; q++)	{
+				int jj = q * 3;
+				int values = 0;
+				for (int i = ii; i < ii + 3; i++)	{
+					for (int j = jj; j < jj + 3; j++)	{
+						if (board[i][j] != 0)
+							values |= value_mask[board[i][j]];
+					}
+				}
+				square_forbidden[p][q] = values;
+			}
+		}
+
+		return fastsolveBM(level, rows_forbidden, column_forbidden, square_forbidden);
+	}
+	private boolean fastsolveBM(int level, int[] rows_forbidden, int[] column_forbidden, int[][] square_forbidden) {
+//find plain solution
+		boolean found;
+		do {
+			found = false;
+			for (int i = 0; i < 9; i++)	{
+				for (int j = 0; j < 9; j++)	{
+					if (board[i][j] == 0) {
+						int values = rows_forbidden[i] | column_forbidden[j] | square_forbidden[i / 3][j / 3];
+						if (Integer.bitCount(values) == 8) {//found plain solution for place (i, j)
+							for (int k = 1; k < 10; k++) {
+								if ((values & value_mask[k]) == 0) {
+									board[i][j] = k;
+									int vmask = value_mask[k];
+									rows_forbidden[i] |= vmask;
+									column_forbidden[j] |= vmask;
+									square_forbidden[i / 3][j / 3] |= vmask;
+									found = true;
+									break;
+								}
+							}
 						}
 					}
+				}
+			}
+		} while (found);
+
+//find recursive solution
+		String saved_board = toString();
+		int[] saved_rows_forbidden = new int[9];
+		System.arraycopy(rows_forbidden, 0, saved_rows_forbidden, 0, 9);
+		int[] saved_column_forbidden = new int[9];
+		System.arraycopy(column_forbidden, 0, saved_column_forbidden, 0, 9);
+		int[][] saved_square_forbidden = new int[3][3];
+        for (int p = 0; p < 3; p++)
+			System.arraycopy(square_forbidden[p], 0, saved_square_forbidden[p], 0, 3);
+
+		for (int i = 0; i < 9; i++)	{
+			for (int j = 0; j < 9; j++)	{
+				if (board[i][j] == 0) {
+					int values = rows_forbidden[i] | column_forbidden[j] | square_forbidden[i / 3][j / 3];
+					if (Integer.bitCount(values) < 9)
+						for (int k = 1; k < 10; k++) {
+							if ((values & value_mask[k]) == 0) {
+								board[i][j] = k;
+								int vmask = value_mask[k];
+								rows_forbidden[i] |= vmask;
+								column_forbidden[j] |= vmask;
+								square_forbidden[i / 3][j / 3] |= vmask;
+
+								if (fastsolveBM(level + 1, rows_forbidden, column_forbidden, square_forbidden)) {//board solved?
+									return true;
+								} else {
+									parseBoard(saved_board);//restore board
+									System.arraycopy(saved_rows_forbidden, 0, rows_forbidden, 0, 9);
+									System.arraycopy(saved_column_forbidden, 0, column_forbidden, 0, 9);
+									for (int s = 0; s < 3; s++)//restore forbidden table
+										System.arraycopy(saved_square_forbidden[s], 0, square_forbidden[s], 0, 3);
+								}
+							}
+						}
 					return false;
 				}
 			}
@@ -334,7 +448,7 @@ public class Sudoku {
 	}
 
 //internal function, it finds values related to place (ii, jj), used by solve()
-	private HashSet<Integer> getRelatedValues(int ii, int jj) {
+	private HashSet<Integer> getForbiddenValues(int ii, int jj) {
 		HashSet<Integer> values = new HashSet<>();
 //check rows
 		for (int i = 0; i < 9; i++)	{
@@ -386,7 +500,7 @@ public class Sudoku {
 	}
 
 //internal function, it finds values related to place (ii, jj) using bitmap, used by solveBM()
-	private int getBMRelatedValues(int ii, int jj) {
+	private int getForbiddenValuesBM(int ii, int jj) {
 		int values = 0;
 //check rows
 		for (int i = 0; i < 9; i++)	{
@@ -536,7 +650,7 @@ public class Sudoku {
 			while (true) {
 				sudo.generate(30);
 //				sudo.fillBoard(30);
-				sudo.solve(0);
+				sudo.fastsolveBM(0);
 				if (sudo.isFull() && sudo.isCorrect()) {
 					System.out.print(".");
 				} else System.out.println("#values = " + sudo.getNumberOfValues() + ", isFull = " + sudo.isFull() + ", isCorrect = " + sudo.isCorrect());
@@ -548,6 +662,9 @@ public class Sudoku {
 			System.out.println("----------------------");
 			System.out.println("Benchmarking solveBM()");
 			sudo.doBenchmark(sudo::solveBM);
+			System.out.println("----------------------");
+			System.out.println("Benchmarking fastsolveBM()");
+			sudo.doBenchmark(sudo::fastsolveBM);
 		} else {
 			String board = args[0];
 			if (board.length() == 81) {
@@ -556,7 +673,7 @@ public class Sudoku {
 					sudo.print(true);
 					System.out.println("#values = " + sudo.getNumberOfValues() + ", isFull = " + sudo.isFull() + ", isCorrect = " + sudo.isCorrect());
 					long t0 = System.nanoTime();
-					if (sudo.solveBM(0)) {
+					if (sudo.fastsolveBM(0)) {
 						System.out.println("Solution found in " + (System.nanoTime() - t0) / 1e6 + " ms:");
 						sudo.print(true);
 						System.out.println("#values = " + sudo.getNumberOfValues() + ", isFull = " + sudo.isFull() + ", isCorrect = " + sudo.isCorrect());
