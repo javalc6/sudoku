@@ -525,20 +525,20 @@ public class Sudoku {
 	}
 
 	public void doBenchmark(Function<Integer, Boolean> solver) {
-		long t0 = System.nanoTime();
+		long t0 = System.nanoTime(); long total = 0;
 		long max = 0;
 		for (String board: benchmarks) {
 			parseBoard(board);
 			solver.apply(0);
 			long t = System.nanoTime();
 			long delta = t - t0;
-			t0 = t;
+			t0 = t; total += delta;
 			if (delta > max)
 				max = delta;
 			System.out.print(".");
 		}
 		System.out.println();
-		System.out.println("Average solver time: " + (System.nanoTime() - t0) / 1e6 / benchmarks.length + " ms");
+		System.out.println("Average solver time: " + total / 1e6 / benchmarks.length + " ms");
 		System.out.println("Max solver time: " + max / 1e6 + " ms");
 	}
 
