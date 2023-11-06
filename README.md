@@ -16,6 +16,8 @@ solveBM(int level): try to solve the sudoku board using bitmap for speed improve
 
 fastsolveBM(int level): try to solve the sudoku board using bitmap and forbidden tables for speed improvement
 
+solveDLX(int level): try to solve the sudoku board using DLX Sudoku solver developed by Shivan Kaul Sahib, reference: https://github.com/ShivanKaul/Sudoku-DLX/tree/master
+
 parseBoard(String str): unpack string to board;
 ```
 

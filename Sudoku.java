@@ -8,6 +8,7 @@ Note: ordinary values are in 1..9 range, value 0 is used for a free place
 03-11-2023: added parameter -benchmark to perform benchmarks
 04-11-2023: added method generate() to generate random sudoku board using solver based algorithm
 05-11-2023: added method fastsolveBM() to solve sudoku using bitmaps and forbidden tables for speed improvement
+06-11-2023: added method solveDLX() to solve the sudoku board using DLX Sudoku solver developed by Shivan Kaul Sahib
 
 Usage: java Sudoku [-benchmark | <board>]
 
@@ -20,6 +21,8 @@ with parameters:
 import java.util.function.Function;
 import java.util.HashSet;
 import java.util.Random;
+
+import dlx.SudokuDLX;
 
 public class Sudoku {
 
@@ -347,6 +350,15 @@ public class Sudoku {
 		return true;
 	}
 
+//solveDLX: try to solve the sudoku board using DLX Sudoku solver developed by Shivan Kaul Sahib, reference: https://github.com/ShivanKaul/Sudoku-DLX/tree/master
+	public boolean solveDLX(int level) {
+		SudokuDLX s = new SudokuDLX(3);
+		s.parseBoard(toString());
+		if (s.solve()) {
+			parseBoard(s.toString());//import result
+			return true;
+		} else return false;
+	}
 
 //getNumberOfValues: get Number Of Values > 0
 	public int getNumberOfValues() {
@@ -526,20 +538,22 @@ public class Sudoku {
 
 	public void doBenchmark(Function<Integer, Boolean> solver) {
 		long t0 = System.nanoTime(); long total = 0;
-		long max = 0;
-		for (String board: benchmarks) {
-			parseBoard(board);
+		long max = 0; int slowest_run = 0;
+		for (int i = 0; i < benchmarks.length; i++) {
+			parseBoard(benchmarks[i]);
 			solver.apply(0);
 			long t = System.nanoTime();
 			long delta = t - t0;
 			t0 = t; total += delta;
-			if (delta > max)
+			if (delta > max) {
 				max = delta;
+				slowest_run = i;
+			}
 			System.out.print(".");
 		}
 		System.out.println();
 		System.out.println("Average solver time: " + total / 1e6 / benchmarks.length + " ms");
-		System.out.println("Max solver time: " + max / 1e6 + " ms");
+		System.out.println("Max solver time: " + max / 1e6 + " ms, running benchmark " + benchmarks[slowest_run]);
 	}
 
 	final static String[] benchmarks = {//reference boards for benchmarking
@@ -667,6 +681,9 @@ public class Sudoku {
 			System.out.println("----------------------");
 			System.out.println("Benchmarking fastsolveBM()");
 			sudo.doBenchmark(sudo::fastsolveBM);
+			System.out.println("----------------------");
+			System.out.println("Benchmarking solveDLX()");
+			sudo.doBenchmark(sudo::solveDLX);
 		} else {
 			String board = args[0];
 			if (board.length() == 81) {
