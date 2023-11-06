@@ -530,7 +530,9 @@ public class Sudoku {
 		for (String board: benchmarks) {
 			parseBoard(board);
 			solver.apply(0);
-			long delta = System.nanoTime() - t0;
+			long t = System.nanoTime();
+			long delta = t - t0;
+			t0 = t;
 			if (delta > max)
 				max = delta;
 			System.out.print(".");
