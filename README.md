@@ -28,7 +28,7 @@ with parameters:
 -benchmark: performs benchmark using a specific set of boards
 <board>: 81 characters string defining a Sudoku board, e.g. 000000012000000003002300400001800005060070800000009000008500000900040500470006000
 ```
-# Example
+# Examples
 
 Executing the command ``java Sudoku 000000012000000003002300400001800005060070800000009000008500000900040500470006000`` provides the following output:
 
@@ -45,7 +45,7 @@ Executing the command ``java Sudoku 00000001200000000300230040000180000506007080
 900|040|500
 470|006|000
 #values = 21, isFull = false, isCorrect = true
-Solution found:
+Solution found in 173.3481 ms:
 839|465|712
 146|782|953
 752|391|486
@@ -58,4 +58,22 @@ Solution found:
 913|248|567
 475|916|238
 #values = 81, isFull = true, isCorrect = true
+```
+Executing the command ``java Sudoku -benchmark`` provides the following output running on CPU Intel i3 9100F:
+
+```
+Benchmarking solve()
+....................................................................................................
+Average solver time: 17.141215 ms
+Max solver time: 845.31 ms
+----------------------
+Benchmarking solveBM()
+....................................................................................................
+Average solver time: 6.645404 ms
+Max solver time: 302.3826 ms
+----------------------
+Benchmarking fastsolveBM()
+....................................................................................................
+Average solver time: 2.863942 ms
+Max solver time: 127.7754 ms
 ```
