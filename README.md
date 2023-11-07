@@ -66,16 +66,21 @@ Executing the command ``java Sudoku -benchmark`` provides the following output r
 ```
 Benchmarking solve()
 ....................................................................................................
-Average solver time: 17.141215 ms
-Max solver time: 845.31 ms
+Average solver time: 17.45128 ms
+Max solver time: 858.7434 ms, running benchmark .......12........3..23..4....18....5.6..7.8.......9.....85.....9...4.5..47...6...
 ----------------------
 Benchmarking solveBM()
 ....................................................................................................
-Average solver time: 6.645404 ms
-Max solver time: 302.3826 ms
+Average solver time: 6.496257000000001 ms
+Max solver time: 301.349 ms, running benchmark .......12........3..23..4....18....5.6..7.8.......9.....85.....9...4.5..47...6...
 ----------------------
 Benchmarking fastsolveBM()
 ....................................................................................................
-Average solver time: 2.863942 ms
-Max solver time: 127.7754 ms
+Average solver time: 2.819145 ms
+Max solver time: 121.1224 ms, running benchmark .......12........3..23..4....18....5.6..7.8.......9.....85.....9...4.5..47...6...
+----------------------
+Benchmarking solveDLX()
+....................................................................................................
+Average solver time: 1.224873 ms
+Max solver time: 15.2354 ms, running benchmark .......12........3..23..4....18....5.6..7.8.......9.....85.....9...4.5..47...6...
 ```
