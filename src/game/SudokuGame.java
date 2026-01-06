@@ -49,12 +49,15 @@ public class SudokuGame extends JFrame {
 		generateNewSudoku();
         
         JPanel controlPanel = new JPanel();
+		JButton newGameButton = new JButton("New Sudoku");
         JButton resetButton = new JButton("Reset");
         JButton solveButton = new JButton("Solve");
-        
+
+		newGameButton.addActionListener(e -> generateNewSudoku());
         resetButton.addActionListener(e -> resetBoard());
         solveButton.addActionListener(e -> solveBoard());
         
+		controlPanel.add(newGameButton);
         controlPanel.add(resetButton);
         controlPanel.add(solveButton);
 
