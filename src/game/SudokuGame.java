@@ -11,8 +11,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -98,6 +97,29 @@ public class SudokuGame extends JFrame {
                         SwingUtilities.invokeLater(() -> checkMove(r, c));
                     }
                 });
+				cell.addKeyListener(new KeyAdapter() {
+					public void keyPressed(KeyEvent e) {
+						switch (e.getKeyCode()) {
+							case KeyEvent.VK_UP:
+								if (r > 0) cells[r - 1][c].requestFocus();
+								break;
+							case KeyEvent.VK_DOWN:
+								if (r < GRID_SIZE - 1) cells[r + 1][c].requestFocus();
+								break;
+							case KeyEvent.VK_LEFT:
+								if (c > 0) cells[r][c - 1].requestFocus();
+								break;
+							case KeyEvent.VK_RIGHT:
+								if (c < GRID_SIZE - 1) cells[r][c + 1].requestFocus();
+								break;
+						}
+					}
+				});
+				cell.addFocusListener(new FocusAdapter() {
+					public void focusGained(FocusEvent e) {
+						cell.selectAll();
+					}
+				});
 
                 cells[row][col] = cell;
                 boardPanel.add(cell);
