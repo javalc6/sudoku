@@ -23,7 +23,7 @@ parseBoard(String str): unpack string to board;
 
 # Usage of sudoku solver from command line
 ```
-Usage: java solver.Sudoku [-benchmark | <board>]
+Usage: java -cp classes solver.Sudoku [-benchmark | <board>]
 
 without parameters: it runs random tests forever
 with parameters:
@@ -34,13 +34,13 @@ with parameters:
 # Running interactive sudoku game
 ``SudokuGame`` is an interactive java Swing app to play Sudoku game, it uses ``fastsolveBM`` method to solve the game
 ```
-Usage: java game.SudokuGame
+Usage: java -cp classes game.SudokuGame
 ```
 
 
 # Examples
 
-Executing the command ``java Sudoku 000000012000000003002300400001800005060070800000009000008500000900040500470006000`` provides the following output:
+Executing the command ``java -cp classes solver.Sudoku 000000012000000003002300400001800005060070800000009000008500000900040500470006000`` provides the following output:
 
 ```
 000|000|012
@@ -69,7 +69,7 @@ Solution found in 173.3481 ms:
 475|916|238
 #values = 81, isFull = true, isCorrect = true
 ```
-Executing the command ``java Sudoku -benchmark`` provides the following output running on CPU Intel i3 9100F:
+Executing the command ``java -cp classes solver.Sudoku -benchmark`` provides the following output running on CPU Intel i3 9100F:
 
 ```
 Benchmarking solve()
