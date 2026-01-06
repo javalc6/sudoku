@@ -36,7 +36,7 @@ with parameters:
 ```
 Usage: java -cp classes game.SudokuGame
 ```
-
+Try ``SudokuGame`` using the browser without downloading anything using the *SnapCode* tool: [SudokuGame via SnapCode](https://reportmill.com/SnapCode/app/#open:https://github.com/javalc6/sudoku.zip#/game/SudokuGame.java)
 
 # Examples
 
