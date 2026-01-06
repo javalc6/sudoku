@@ -21,15 +21,23 @@ solveDLX(int level): try to solve the sudoku board using DLX Sudoku solver devel
 parseBoard(String str): unpack string to board;
 ```
 
-# Usage from command line
+# Usage of sudoku solver from command line
 ```
-Usage: java Sudoku [-benchmark | <board>]
+Usage: java solver.Sudoku [-benchmark | <board>]
 
 without parameters: it runs random tests forever
 with parameters:
 -benchmark: performs benchmark using a specific set of boards
 <board>: 81 characters string defining a Sudoku board, e.g. 000000012000000003002300400001800005060070800000009000008500000900040500470006000
 ```
+
+# Running interactive sudoku game
+``SudokuGame`` is an interactive java Swing app to play Sudoku game, it uses ``fastsolveBM`` method to solve the game
+```
+Usage: java game.SudokuGame
+```
+
+
 # Examples
 
 Executing the command ``java Sudoku 000000012000000003002300400001800005060070800000009000008500000900040500470006000`` provides the following output:
@@ -84,3 +92,7 @@ Benchmarking solveDLX()
 Average solver time: 1.224873 ms
 Max solver time: 15.2354 ms, running benchmark .......12........3..23..4....18....5.6..7.8.......9.....85.....9...4.5..47...6...
 ```
+# Screenshot
+Sudoku game:
+
+![Screenshot](images/sudoku.png)

@@ -1,5 +1,6 @@
+package solver;
 /**
-The class Sudoku contains utilities to generate and solve Sudoku game
+The class solver.Sudoku contains utilities to generate and solve Sudoku game
 
 Note: ordinary values are in 1..9 range, value 0 is used for a free place
 
@@ -9,8 +10,9 @@ Note: ordinary values are in 1..9 range, value 0 is used for a free place
 04-11-2023: added method generate() to generate random sudoku board using solver based algorithm
 05-11-2023: added method fastsolveBM() to solve sudoku using bitmaps and forbidden tables for speed improvement
 06-11-2023: added method solveDLX() to solve the sudoku board using DLX Sudoku solver developed by Shivan Kaul Sahib
+06-01-2026: refactored code, can be used as standalone for test or as solver by another app
 
-Usage: java Sudoku [-benchmark | <board>]
+Usage: java solver.Sudoku [-benchmark | <board>]
 
 without parameters: it runs random tests forever
 with parameters:
@@ -148,7 +150,11 @@ public class Sudoku {
 	}
 
 //solve: try to solve the sudoku board
-	public boolean solve(int level) {
+	public boolean solve() {
+		return solve(0);
+	}
+	
+	private boolean solve(int level) {
 //find plain solution
 		boolean found;
 		do {
@@ -196,7 +202,11 @@ public class Sudoku {
 	}
 
 //solveBM: try to solve the sudoku board using bitmap for speed improvement
-	public boolean solveBM(int level) {
+	public boolean solveBM() {
+		return solveBM(0);
+	}
+
+	private boolean solveBM(int level) {
 //find plain solution
 		boolean found;
 		do {
@@ -244,7 +254,11 @@ public class Sudoku {
 	}
 
 //fastsolveBM: try to solve the sudoku board using bitmap and forbidden tables for speed improvement
-	public boolean fastsolveBM(int level) {
+	public boolean fastsolveBM() {
+		return fastsolveBM(0);
+	}
+
+	private boolean fastsolveBM(int level) {
 		int[] rows_forbidden = new int[9];//row values forbidden by Sudoku rules
 		for (int i = 0; i < 9; i++)	{
 			int values = 0;
@@ -417,6 +431,15 @@ public class Sudoku {
 			}
 		}
 		return true;
+	}
+
+//cloneBoard(): get board as int[][] using deep copy
+    public int[][] cloneBoard() {
+		int[][] copy = new int[board.length][];
+		for (int i = 0; i < board.length; i++) {
+			copy[i] = board[i].clone(); 
+		}
+		return copy;
 	}
 
 //toString: pack board as string
