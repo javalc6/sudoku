@@ -38,7 +38,7 @@ public class Sudoku {
 
 	final static int[] value_mask = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};//mask used by method solveBM(): value_mask[k] = 2 ^ k
 
-//generate: random sudoku board generator, it builds a board with unique solution and at least <n_values> in 17..81 range
+//generate: random sudoku board generator, it builds a board with unique solution and at least <n_values>
 	public void generate(int n_values) {
 		for (int i = 0; i < SIZE; i++)
 			for (int j = 0; j < SIZE; j++)
