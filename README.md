@@ -69,28 +69,28 @@ Solution found in 173.3481 ms:
 475|916|238
 #values = 81, isFull = true, isCorrect = true
 ```
-Executing the command ``java -cp classes solver.Sudoku -benchmark`` provides the following output running on CPU Intel i3 9100F:
+Executing the command ``java -cp classes solver.Sudoku -benchmark`` provides the following output running on CPU AMD Ryzen 7 8845HS:
 
 ```
 Benchmarking solve()
 ....................................................................................................
-Average solver time: 17.45128 ms
-Max solver time: 858.7434 ms, running benchmark .......12........3..23..4....18....5.6..7.8.......9.....85.....9...4.5..47...6...
+Average solver time: 1.628929 ms
+Max solver time: 71.4804 ms, running benchmark .1...5..7672......9.5.7....8...5..1.3....4.92.....3......5...8...9......5...18..9
 ----------------------
 Benchmarking solveBM()
 ....................................................................................................
-Average solver time: 6.496257000000001 ms
-Max solver time: 301.349 ms, running benchmark .......12........3..23..4....18....5.6..7.8.......9.....85.....9...4.5..47...6...
+Average solver time: 0.817385 ms
+Max solver time: 36.6112 ms, running benchmark .1...5..7672......9.5.7....8...5..1.3....4.92.....3......5...8...9......5...18..9
 ----------------------
 Benchmarking fastsolveBM()
 ....................................................................................................
-Average solver time: 2.819145 ms
-Max solver time: 121.1224 ms, running benchmark .......12........3..23..4....18....5.6..7.8.......9.....85.....9...4.5..47...6...
+Average solver time: 0.254842 ms
+Max solver time: 6.9105 ms, running benchmark .1...5..7672......9.5.7....8...5..1.3....4.92.....3......5...8...9......5...18..9
 ----------------------
 Benchmarking solveDLX()
 ....................................................................................................
-Average solver time: 1.224873 ms
-Max solver time: 15.2354 ms, running benchmark .......12........3..23..4....18....5.6..7.8.......9.....85.....9...4.5..47...6...
+Average solver time: 0.9052899999999999 ms
+Max solver time: 11.1666 ms, running benchmark .......12........3..23..4....18....5.6..7.8.......9.....85.....9...4.5..47...6...
 ```
 # Screenshot
 Sudoku game:
