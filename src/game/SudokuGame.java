@@ -138,6 +138,7 @@ public class SudokuGame extends JFrame {
         for (int r = 0; r < GRID_SIZE; r++) {
             for (int c = 0; c < GRID_SIZE; c++) {
                 if (initialBoard[r][c] != 0) {
+					cells[r][c].setForeground(Color.BLACK);
                     cells[r][c].setText(String.valueOf(initialBoard[r][c]));
                     cells[r][c].setEditable(false);
                     cells[r][c].setBackground(new Color(230, 230, 230));
