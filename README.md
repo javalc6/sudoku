@@ -55,7 +55,7 @@ Executing the command ``java -cp classes solver.Sudoku 0000000120000000030023004
 900|040|500
 470|006|000
 #values = 21, isFull = false, isCorrect = true
-Solution found in 173.3481 ms:
+Solution found in 1.1505 ms:
 839|465|712
 146|782|953
 752|391|486
