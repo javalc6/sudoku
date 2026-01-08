@@ -33,8 +33,6 @@ public class Sudoku {
 	private static final int TOTAL_CELLS = 81;
 
     private final int[][] board = new int[SIZE][SIZE];
-    private final int[][] template = {{1,2,3,4,5,6,7,8,9},{4,9,7,8,1,2,5,6,3},{5,8,6,3,9,7,1,4,2},{3,5,4,7,6,9,8,2,1},
-		{8,6,9,2,4,1,3,5,7},{7,1,2,5,3,8,4,9,6},{9,7,1,6,8,5,2,3,4},{2,3,5,9,7,4,6,1,8},{6,4,8,1,2,3,9,7,5}};
 
 	final static int[] value_mask = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};//mask used by method solveBM(): value_mask[k] = 2 ^ k
 
@@ -100,7 +98,7 @@ public class Sudoku {
 					HashSet<Integer> values = getAvailableValues(i, j);
 					Integer[] avalues = values.toArray(new Integer[0]);
 					int n_avalues = avalues.length;
-					if (values.size() == 0)
+					if (values.isEmpty())
 						return false;
 					if (values.size() > 1) {
 						for (int l = 0; l < n_avalues; l++) {
@@ -111,12 +109,12 @@ public class Sudoku {
 						}
 					}
 
-					for (int k = 0; k < n_avalues; k++) {
-						board[i][j] = avalues[k];
-						if (generate(random)) {//board solved?
-							return true;
-						} else parseBoard(saved_board);//restore board
-					}
+                    for (Integer avalue : avalues) {
+                        board[i][j] = avalue;
+                        if (generate(random)) {//board solved?
+                            return true;
+                        } else parseBoard(saved_board);//restore board
+                    }
 					return false;
 				}
 			}
