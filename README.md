@@ -3,25 +3,18 @@ The class Sudoku contains utilities to generate and solve Sudoku games
 
 Note: ordinary values are in 1..9 range, value 0 is used for a free place
 
-# Methods
+## Methods
 The following methods are provided to generate and solve Sudoku games:
-```
-fillBoard(int n_values): fills board with random n_values in 1..81 range;
+| Method | Description |
+|--------|-------------|
+| `generate(int n_values)` | random sudoku board generator with unique solution and at least n_values |
+| `solve()` | solve the sudoku board |
+| `solveBM()` | solve the sudoku board using bitmap for speed improvement |
+| `fastsolveBM()` | solve the sudoku board using bitmap and forbidden tables for speed improvement |
+| `solveDLX()` | solve the sudoku board using DLX Sudoku solver developed by Shivan Kaul Sahib |
+| `parseBoard(String str)` | unpack string to board |
 
-generate(int n_values): random sudoku board generator with random n_values in 1..81 range;
-
-solve(int level): try to solve the sudoku board;
-
-solveBM(int level): try to solve the sudoku board using bitmap for speed improvement;
-
-fastsolveBM(int level): try to solve the sudoku board using bitmap and forbidden tables for speed improvement
-
-solveDLX(int level): try to solve the sudoku board using DLX Sudoku solver developed by Shivan Kaul Sahib, reference: https://github.com/ShivanKaul/Sudoku-DLX/tree/master
-
-parseBoard(String str): unpack string to board;
-```
-
-# Usage of sudoku solver from command line
+## Usage of sudoku solver from command line
 ```
 Usage: java -cp classes solver.Sudoku [-benchmark | <board>]
 
@@ -31,14 +24,14 @@ with parameters:
 <board>: 81 characters string defining a Sudoku board, e.g. 000000012000000003002300400001800005060070800000009000008500000900040500470006000
 ```
 
-# Running interactive sudoku game
+## Running interactive sudoku game
 ``SudokuGame`` is an interactive java Swing app to play Sudoku game, it uses ``fastsolveBM`` method to solve the game
 ```
 Usage: java -cp classes game.SudokuGame
 ```
 Try ``SudokuGame`` using the browser without downloading anything using the *SnapCode* tool: [SudokuGame via SnapCode](https://reportmill.com/SnapCode/app/#open:https://github.com/javalc6/sudoku.zip#/game/SudokuGame.java)
 
-# Examples
+## Solution example
 
 Executing the command ``java -cp classes solver.Sudoku 000000012000000003002300400001800005060070800000009000008500000900040500470006000`` provides the following output:
 
@@ -69,7 +62,8 @@ Solution found in 1.1505 ms:
 475|916|238
 #values = 81, isFull = true, isCorrect = true
 ```
-Executing the command ``java -cp classes solver.Sudoku -benchmark`` provides the following output running on CPU AMD Ryzen 7 8845HS:
+## Benchmarking different algorithms
+Executing the command ``java -cp classes solver.Sudoku -benchmark`` may provide the following output running on CPU AMD Ryzen 7 8845HS:
 
 ```
 Benchmarking solve()
@@ -92,7 +86,7 @@ Benchmarking solveDLX()
 Average solver time: 0.4467437179487179 ms
 Max solver time: 7.102 ms, running benchmark .........6..4..1...47..2.6.8.6........93..8.2....84..7...7...863...267..........1
 ```
-# Screenshot
+## Screenshot
 Sudoku game:
 
 ![Screenshot](images/sudoku.png)
