@@ -125,36 +125,6 @@ public class Sudoku {
 		return true;
 	}
 
-//fillBoard: fill board with random n_values in 1..81 range 
-    public void fillBoard(int n_values) {
-		int[] permut = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-		Random random = new Random();
-		for (int i = 1; i < 10; i++) {
-			int k = random.nextInt(SIZE) + 1;//k in 1..9 range
-			int temp = permut[k];
-			permut[k] = permut[i];
-			permut[i] = temp;
-		}
-		int counter = n_values;
-		int[] shuffle = new int[TOTAL_CELLS];
-		for (int i = 0; i < TOTAL_CELLS; i++)
-			shuffle[i] = i;
-		for (int i = 0; i < TOTAL_CELLS; i++) {
-			int k = random.nextInt(TOTAL_CELLS);//k in 0..80 range
-			int temp = shuffle[k];
-			shuffle[k] = shuffle[i];
-			shuffle[i] = temp;
-		}
-		for (int i = 0; i < SIZE; i++)	{
-			for (int j = 0; j < SIZE; j++)	{
-				if (counter > 0 && shuffle[i * SIZE + j] < n_values) {
-					board[i][j] = permut[template[i][j]];
-					counter--;
-				} else board[i][j] = 0;
-			}
-		}
-	}
-
 //solve: try to solve the sudoku board
 	public boolean solve() {
 		return solve(0);
@@ -826,18 +796,5 @@ public class Sudoku {
 			} else System.out.println("Usage: java Sudoku [<board>]\n<board>: 81 characters string defining a Sudoku board");
 		}
     }
-
-/* generic example
-		Sudoku sudo = new Sudoku();
-//		sudo.parseBoard("123456789497812563586397142354769821869241357712538496971685234235974618648123975");//template for fillBoard()
-		sudo.parseBoard(".......12........3..23..4....18....5.6..7.8.......9.....85.....9...4.5..47...6...");//Sudoku Blonde Platine
-
-//		sudo.fillBoard(30);
-		sudo.print(true);
-		System.out.println("#values = " + sudo.getNumberOfValues() + ", isFull = " + sudo.isFull() + ", isCorrect = " + sudo.isCorrect());
-		sudo.solve(0);
-		sudo.print(true);
-		System.out.println("#values = " + sudo.getNumberOfValues() + ", isFull = " + sudo.isFull() + ", isCorrect = " + sudo.isCorrect());
-*/
 
 }
