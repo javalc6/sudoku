@@ -1,11 +1,11 @@
 # Sudoku
-Class Sudoku contains methods useful to generate and solve Sudoku games; it can be launched as standalone app to perform benchmarking tests of the implemented solvers.
-Class SudokuGame is an interactive Swing app to play with Sudoku.
+Class ``Sudoku`` contains methods useful to generate and solve Sudoku games; it can be launched as standalone app to perform benchmarking tests of the implemented solvers.
+Class ``SudokuGame`` is an interactive Swing app to play with Sudoku.
 
 Note: ordinary values are in 1..9 range, value 0 is used for a free place
 
 ## Methods
-The following methods are provided to generate and solve Sudoku games:
+The following methods are provided by class ``Sudoku`` to generate and solve Sudoku games:
 | Method | Description |
 |--------|-------------|
 | `generate(int n_values)` | random sudoku board generator with unique solution and at least n_values |
