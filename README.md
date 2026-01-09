@@ -1,5 +1,6 @@
 # Sudoku
-The class Sudoku contains utilities to generate and solve Sudoku games
+Class Sudoku contains methods useful to generate and solve Sudoku games; it can be launched as standalone app to perform benchmarking tests of the implemented solvers.
+Class SudokuGame is an interactive Swing app to play with Sudoku.
 
 Note: ordinary values are in 1..9 range, value 0 is used for a free place
 
@@ -16,11 +17,12 @@ The following methods are provided to generate and solve Sudoku games:
 
 ## Usage of sudoku solver from command line
 ```
-Usage: java -cp classes solver.Sudoku [-benchmark | <board>]
+Usage: java -cp classes solver.Sudoku [-benchmark | -check | <board>]
 
 without parameters: it runs random tests forever
 with parameters:
 -benchmark: performs benchmark using a specific set of boards
+-check: check that all solvers return same result for a specific set of boards
 <board>: 81 characters string defining a Sudoku board, e.g. 000000012000000003002300400001800005060070800000009000008500000900040500470006000
 ```
 
@@ -67,26 +69,27 @@ Executing the command ``java -cp classes solver.Sudoku -benchmark`` may provide 
 
 ```
 Benchmarking solve()
-................................................................................................................................................................
-Average solver time: 6.2033619230769235 ms
-Max solver time: 129.7548 ms, running benchmark .7..1....5....8.7..9.4...2...3..9...6.....2...8..3...4...1.9..3.5....6....8..4...
+Average solver time: 9.066690615384616 ms
+Max solver time: 173.9068 ms, running benchmark 48.3............71.2.......7.5....6....2..8.............1.76...3.....4......5....
 ----------------------
 Benchmarking solveBM()
-................................................................................................................................................................
-Average solver time: 2.890679230769231 ms
-Max solver time: 60.2813 ms, running benchmark .7..1....5....8.7..9.4...2...3..9...6.....2...8..3...4...1.9..3.5....6....8..4...
+Average solver time: 4.016155948717949 ms
+Max solver time: 68.8113 ms, running benchmark 48.3............71.2.......7.5....6....2..8.............1.76...3.....4......5....
 ----------------------
 Benchmarking fastsolveBM()
-................................................................................................................................................................
-Average solver time: 0.3954333333333333 ms
-Max solver time: 11.9924 ms, running benchmark ..2.....18..6..9..5....4..7.9.....3.3.....1.8.....2.4..7....6..9..3..17.....8....
+Average solver time: 0.4828485641025641 ms
+Max solver time: 8.1644 ms, running benchmark 48.3............71.2.......7.5....6....2..8.............1.76...3.....4......5....
 ----------------------
 Benchmarking solveDLX()
-................................................................................................................................................................
-Average solver time: 0.4467437179487179 ms
-Max solver time: 7.102 ms, running benchmark .........6..4..1...47..2.6.8.6........93..8.2....84..7...7...863...267..........1
+Average solver time: 0.6058199487179486 ms
+Max solver time: 7.2324 ms, running benchmark .........6..4..1...47..2.6.8.6........93..8.2....84..7...7...863...267..........1
 ```
 ## Screenshot
 Sudoku game:
 
 ![Screenshot](images/sudoku.png)
+
+# Credits
+The author of DLX Solver implementation is Shivan Kaul Sahib, [Sudoku-DLX](https://github.com/ShivanKaul/Sudoku-DLX)
+
+A subset of the list of sudoku boards is from https://magictour.free.fr/sudoku.htm

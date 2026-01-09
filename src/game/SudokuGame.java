@@ -25,7 +25,9 @@ import solver.Sudoku;
  * usage: java game.SudokuGame
  */
 public class SudokuGame extends JFrame {
-    private static final int NUMBER_OF_FILLED_CELLS = 30;
+    private static final int N_FILLED_CELLS_EASY = 50;
+    private static final int N_FILLED_CELLS_MEDIUM = 40;
+    private static final int N_FILLED_CELLS_HARD = 30;
 
 	private static final int GRID_SIZE = 9;
     private static final int SUBGRID_SIZE = 3;
@@ -46,18 +48,24 @@ public class SudokuGame extends JFrame {
         initializeGrid(boardPanel);
         
 		sudoku = new Sudoku();
-		generateNewSudoku();
+		generateNewSudoku(N_FILLED_CELLS_MEDIUM);
         
         JPanel controlPanel = new JPanel();
-		JButton newGameButton = new JButton("New Sudoku");
+		JButton newGameEasyButton = new JButton("New Easy");
+		JButton newGameMediumButton = new JButton("New Medium");
+		JButton newGameHardButton = new JButton("New Hard");
         JButton resetButton = new JButton("Reset");
         JButton solveButton = new JButton("Solve");
 
-		newGameButton.addActionListener(e -> generateNewSudoku());
+		newGameEasyButton.addActionListener(e -> generateNewSudoku(N_FILLED_CELLS_EASY));
+		newGameMediumButton.addActionListener(e -> generateNewSudoku(N_FILLED_CELLS_MEDIUM));
+		newGameHardButton.addActionListener(e -> generateNewSudoku(N_FILLED_CELLS_HARD));
         resetButton.addActionListener(e -> resetBoard());
         solveButton.addActionListener(e -> solveBoard());
         
-		controlPanel.add(newGameButton);
+		controlPanel.add(newGameEasyButton);
+		controlPanel.add(newGameMediumButton);
+		controlPanel.add(newGameHardButton);
         controlPanel.add(resetButton);
         controlPanel.add(solveButton);
 
@@ -130,9 +138,9 @@ public class SudokuGame extends JFrame {
         }
     }
 
-    private void generateNewSudoku() {
+    private void generateNewSudoku(int nvalues) {
         isUpdating = true;
-		sudoku.generate(NUMBER_OF_FILLED_CELLS);
+		sudoku.generate(nvalues);
 		initialBoard = sudoku.cloneBoard();
 
         for (int r = 0; r < GRID_SIZE; r++) {
